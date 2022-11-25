@@ -1,0 +1,268 @@
+
+Private Sub Command1_Click()
+Dim cont, x, i As Integer
+Dim vLinha, tipo, just As String
+'Dim campo() As Variant
+Dim regs() As String
+Dim linhanova As String
+
+Text1.Text = ""
+
+If Text2.Text = "" Then
+   Text2.Text = AbreDialogo()
+End If
+   
+If Text2.Text <> "" Then
+   Open Text2.Text For Input As #1
+   
+' Picture-format
+If Option1(0).Value = True Then
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      If campo(1) = "A" Or campo(1) = "X" Then
+         tipo = "#"
+         just = "LEFT"
+      ElseIf campo(1) = "N" Or campo(1) = "9" Then
+         tipo = "%"
+         just = "RIGHT"
+      End If
+      linhanova = "ALWAYS PICTURE-FORMAT format value of """" using format picture " + Chr(34) + tipo + campo(2) + Chr(34) + " justification " + just + " store result in @" + campo(0)
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+   Loop
+End If
+
+' Picture-format com campos
+If Option1(4).Value = True Then
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      n = n + 1
+      If campo(1) = "A" Or campo(1) = "X" Then
+         tipo = "#"
+         just = "LEFT"
+      ElseIf campo(1) = "N" Or campo(1) = "9" Then
+         tipo = "%"
+         just = "RIGHT"
+      End If
+      If campo(3) = "" Then
+         linhanova = "ALWAYS PICTURE-FORMAT format value of """" using format picture " + Chr(34) + tipo + campo(2) + Chr(34) + " justification " + just + " store result in @" + campo(0)
+      Else
+         linhanova = "ALWAYS PICTURE-FORMAT format value of " + campo(3) + " using format picture " + Chr(34) + tipo + campo(2) + Chr(34) + " justification " + just + " store result in @" + campo(0)
+      End If
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+   Loop
+End If
+
+'Text-extract em variáveis (usando @POS)
+If Option1(2).Value = True Then
+   If Text3.Text = "" Then
+      pos = "1"
+   Else
+      pos = LTrim(RTrim(Text3.Text))
+   End If
+   
+   If Text4.Text = "" Then
+      variavel = "@res"
+   Else
+      variavel = LTrim(RTrim(Text4.Text))
+   End If
+   
+   Text1.Text = "ALWAYS COPY the value " + pos + " into @POS" + Chr(13) + Chr(10)
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      
+      linhanova = "ALWAYS TEXT-EXTRACT using the value " + variavel + " starting at character position @POS extract " + campo(2) + " characters store result in @" + campo(0)
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+      linhanova = "ALWAYS ADD the value of " + campo(2) + " to the value of @POS store result in @POS"
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+   Loop
+End If
+
+'Text-extract em variáveis (usando valor fixo)
+If Option1(5).Value = True Then
+   If Text3.Text = "" Then
+      n = 1
+   Else
+      n = Text3.Text * 1
+End If
+
+If Text4.Text = "" Then
+   variavel = "@res"
+Else
+   variavel = LTrim(RTrim(Text4.Text))
+End If
+   
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      linhanova = "ALWAYS TEXT-EXTRACT using the value " + variavel + " starting at character position" + Str(n) + " extract " + campo(2) + " characters store result in @" + campo(0)
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+      n = n + campo(2)
+   Loop
+End If
+
+' Text-extract nos campos (usando @POS)
+If Option1(1).Value = True Then
+   If Text4.Text = "" Then
+      variavel = "@res"
+   Else
+      variavel = LTrim(RTrim(Text4.Text))
+   End If
+   
+   Text1.Text = "ALWAYS COPY the value 1 into @POS" + Chr(13) + Chr(10)
+   
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      
+      If campo(3) = "" Then
+         linhanova = "ALWAYS TEXT-EXTRACT using the value " + variavel + " starting at character position @POS extract " + campo(2) + " characters store result in @" + campo(0)
+      Else
+         linhanova = "ALWAYS TEXT-EXTRACT using the value " + variavel + " starting at character position @POS extract " + campo(2) + " characters store result in " + campo(3)
+      End If
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+      linhanova = "ALWAYS ADD the value of " + campo(2) + " to the value of @POS store result in @POS"
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+   Loop
+End If
+
+'Text-extract em campos (usando valor fixo)
+If Option1(6).Value = True Then
+   If Text4.Text = "" Then
+      variavel = "@res"
+   Else
+      variavel = LTrim(RTrim(Text4.Text))
+   End If
+   
+   If Text3.Text = "" Then
+      n = 1
+   Else
+      n = Text3.Text * 1
+End If
+   
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      linhanova = "ALWAYS TEXT-EXTRACT using the value " + variavel + " starting at character position" + Str(n) + " extract " + campo(2) + " characters store result in " + campo(3)
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+      n = n + campo(2)
+   Loop
+End If
+
+' String de envio
+If Option1(3).Value = True Then
+   cont = 0
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      campo(3) = LTrim(RTrim(campo(3)))
+      If cont = 0 Then
+         linhanova = "ALWAYS CALCULATE {CONCAT(@" + campo(0)
+      ElseIf (cont Mod 5) = 0 Then
+         linhanova = linhanova + ")} store result in @MSG.ACTX" + Chr(13) + Chr(10) + "ALWAYS CALCULATE {CONCAT(@MSG.ACTX, @" + campo(0)
+      Else
+         linhanova = linhanova + ", @" + campo(0)
+      End If
+      cont = cont + 1
+      
+   Loop
+   linhanova = linhanova + ")} store result in @MSG.ACTX"
+   Text1.Text = linhanova
+   
+End If
+
+'Trim nos campos
+If Option1(7).Value = True Then
+   Dim campo()
+   Do While Not EOF(1)
+      Line Input #1, vLinha
+      campo = Split(vLinha, ";")
+      campo(0) = LTrim(RTrim(campo(0)))
+      campo(0) = Replace(campo(0), " ", "_", , , vbTextCompare)
+      campo(1) = LTrim(RTrim(campo(1)))
+      campo(2) = LTrim(RTrim(campo(2))) * 1
+      tamanho = UBound(campo)
+      If tamanho = 4 Then
+        campo(3) = LTrim(RTrim(campo(3)))
+      Else
+        ReDim Preserve campo(4)
+        campo(3) = ""
+      End If
+      
+      If campo(3) = "" Then
+        CampoTabela = "@" + campo(0)
+      Else
+        CampoTabela = campo(3)
+      End If
+      linhanova = "ALWAYS TRIM command EXTRA spaces from the value of " + CampoTabela + " store result in " + CampoTabela
+      Text1.Text = Text1.Text + linhanova + Chr(13) + Chr(10)
+      n = n + campo(2)
+   Loop
+End If
+
+'-----------------------------------------------------------------
+End If
+
+Close #1
+End Sub
+
+
+Private Sub Command2_Click()
+   End
+End Sub
+
+Private Sub Command3_Click()
+   Text2.Text = AbreDialogo()
+End Sub
+
+Function AbreDialogo() As String
+   Dim prop As String
+   CommonDialog1.DialogTitle = "Procurar Arquivos .csv"
+   CommonDialog1.InitDir = App.Path
+   prop = "Arquivos .csv |*.csv"
+   CommonDialog1.Filter = prop
+   CommonDialog1.FilterIndex = 1
+   CommonDialog1.Flags = cdlOFNFileMustExist + _
+                         cdlOFNLongNames + _
+                         cdlOFNExplorer
+   CommonDialog1.CancelError = False
+   CommonDialog1.ShowOpen
+   AbreDialogo = CommonDialog1.FileName
+End Function
+

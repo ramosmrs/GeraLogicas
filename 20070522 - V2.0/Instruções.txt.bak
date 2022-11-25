@@ -1,0 +1,40 @@
+Ultima versão: 
+==============
+
+versão 1.0, de 22/06/2006
+
+---------------------------------------------------------------------------------------------------------------
+
+1 - O layout do arquivo .csv deve ser:
+
+    campo na transação; tipo de dados; tamanho; campo da tabela no Ctree (opcional)
+
+2 - Campo na transação: substituir os traços que geralmente vêm no arquivo da matriz por ponto e retirar caracteres desnecessários, pois esse nome será o nome das variáveis na lógica;
+
+3 - tipo de dados: X ou A - caracter
+                   N ou 9 - numérico
+
+4 - campo da tabela: colocar o campo referente a tabela no ctree, inclusive com o nome da tabela. Para as linhas que não tiverem o respectivo campo, colocar um ponto-e-vírgula no final da linha, após o tamanho.
+
+5 - Nas opções que são utilizados os campos da tabela, a linha que não contiver o nome do campo da tabela será preenchido com a variável.
+
+7 - O aqruivo .csv pode ser editado tanto pelo Excel quanto pelo bloco de notas
+
+6 - Não se preocupe com os espaços em excesso, pois ele será automaticamente ajustado
+
+
+Exemplo de Trecho de arquivo válido:
+
+CD.PGM;           X;8;
+TP.REGISTRO;9;2;
+CD.ORIGEM;9;2;
+DT.INICIO.PESQ;9;8;TRANS.I031-E.DT.INI
+DT.FIM.PESQ;9;8;TRANS.I031-E.DT.FIM
+CD.SERVICO;9;4;TRANS.I031-E.CD.SERVI
+CD.BAC;9;9;TRANS.I031-E.CD.BAC
+CD.PLACA;A;7;TRANS.I031-E.CD.PLACA
+CD.CONTROLE;N;5;
+ID.CONTINUA;N;1;
+CD.ERRO;N;1;              
+DS.MSG.ERRO;     A;30;      
+
